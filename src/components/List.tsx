@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { MdDeleteOutline } from "react-icons/md";
 import { IconButton } from "./styled/IconButton";
 import { Card } from "./Card";
-import { useUserContext } from "../contexts/UserContext";
+import { Types, useListContext } from "../contexts/ListContext";
 import { useState, useEffect } from "react";
 import { Input } from "./Input";
 
@@ -11,7 +11,6 @@ type ListProps = {
   id: number;
   onDelete: (id: number) => void;
   lists: Array<{ id: number; listName: string }>;
-  setLists: (lists: Array<{ id: number; listName: string }>) => void;
 };
 
 const ListContainer = styled.div`
@@ -38,15 +37,15 @@ const ListContent = styled.div`
   overflow-y: auto;
 `;
 
-export const List = ({ name, onDelete, id, lists, setLists }: ListProps) => {
+export const List = ({ name, onDelete, id, lists }: ListProps) => {
+  const { dispatch } = useListContext();
   const currentList = lists.filter((list) => list.id === id)[0];
   const [listName, setListName] = useState("");
   const [isEdit, setIsEdit] = useState(false);
 
   const editListName = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const editedList = lists.filter((list) => list.id !== id);
-    setLists([{ id: currentList.id, listName }, ...editedList]);
+
     setIsEdit(false);
   };
 

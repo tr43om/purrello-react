@@ -1,11 +1,10 @@
-import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useState } from "react";
 import { List } from "./List";
 import styled from "styled-components";
 import { Input } from "./Input";
 import { Button } from "./styled/Button";
 import { MdAdd } from "react-icons/md";
-import { useListContext } from "../contexts/ListContext";
+import { Types, useListContext } from "../contexts/ListContext";
 
 const ListsContainer = styled.main`
   display: grid;
@@ -15,43 +14,38 @@ const ListsContainer = styled.main`
 `;
 
 export const Lists = () => {
-  // const initialList = [
-  //   { id: 1, listName: "To Do" },
-  //   { id: 2, listName: "Doing" },
-  //   { id: 3, listName: "Done" },
-  // ];
-  // const [lists, setLists] = useLocalStorage("lists", initialList);
-  const { lists, setLists } = useListContext();
+  const { state, dispatch } = useListContext();
   const [newList, setNewList] = useState("");
   const [isInputActive, setIsInputActive] = useState(false);
 
+  console.log(state);
   const addNewList = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!lists) return;
-    setLists?.([...lists, { id: lists.length + 1, listName: newList }]);
+    dispatch({
+      type: Types.Add,
+      payload: { id: Math.random() * 100, listName: newList },
+    });
     setNewList("");
+    setIsInputActive((prev) => !prev);
   };
 
-  //   setNewList("");
-  //   setIsInputActive((prev) => !prev);
-  // };
-
-  // const deleteList = (id: number) => {
-  //   const newList = lists.filter((list) => list.id !== id);
-  //   setLists(newList);
-  // };
+  const deleteList = (id: number) => {
+    dispatch({
+      type: Types.Delete,
+      payload: { id },
+    });
+  };
 
   return (
     <ListsContainer>
-      {lists &&
-        lists.map((list, i) => (
+      {state &&
+        state.map((list) => (
           <List
             key={list.id}
             id={list.id}
-            lists={lists}
-            setLists={() => setLists?.(lists)}
+            lists={state}
             name={list.listName}
-            onDelete={() => console.log("first")}
+            onDelete={deleteList}
           />
         ))}
       <div>
