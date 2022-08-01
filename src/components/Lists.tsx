@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Input } from "./Input";
 import { Button } from "./styled/Button";
 import { MdAdd } from "react-icons/md";
+import { useListContext } from "../contexts/ListContext";
 
 const ListsContainer = styled.main`
   display: grid;
@@ -14,41 +15,45 @@ const ListsContainer = styled.main`
 `;
 
 export const Lists = () => {
-  const initialList = [
-    { id: 1, listName: "To Do" },
-    { id: 2, listName: "Doing" },
-    { id: 3, listName: "Done" },
-  ];
-  const [lists, setLists] = useLocalStorage("lists", initialList);
+  // const initialList = [
+  //   { id: 1, listName: "To Do" },
+  //   { id: 2, listName: "Doing" },
+  //   { id: 3, listName: "Done" },
+  // ];
+  // const [lists, setLists] = useLocalStorage("lists", initialList);
+  const { lists, setLists } = useListContext();
   const [newList, setNewList] = useState("");
   const [isInputActive, setIsInputActive] = useState(false);
 
   const addNewList = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLists([...lists, { id: lists.length + 1, listName: newList }]);
+    if (!lists) return;
+    setLists?.([...lists, { id: lists.length + 1, listName: newList }]);
     setNewList("");
-    setIsInputActive((prev) => !prev);
   };
 
-  const deleteList = (id: number) => {
-    const newList = lists.filter((list) => list.id !== id);
-    setLists(newList);
-  };
+  //   setNewList("");
+  //   setIsInputActive((prev) => !prev);
+  // };
+
+  // const deleteList = (id: number) => {
+  //   const newList = lists.filter((list) => list.id !== id);
+  //   setLists(newList);
+  // };
 
   return (
     <ListsContainer>
-      {lists.map((list, i) => (
-        <List
-          key={list.id}
-          id={list.id}
-          lists={lists}
-          setLists={(lists: Array<{ id: number; listName: string }>) =>
-            setLists(lists)
-          }
-          name={list.listName}
-          onDelete={deleteList}
-        />
-      ))}
+      {lists &&
+        lists.map((list, i) => (
+          <List
+            key={list.id}
+            id={list.id}
+            lists={lists}
+            setLists={() => setLists?.(lists)}
+            name={list.listName}
+            onDelete={() => console.log("first")}
+          />
+        ))}
       <div>
         {isInputActive ? (
           <form onSubmit={addNewList}>
