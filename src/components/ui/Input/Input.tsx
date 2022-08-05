@@ -1,5 +1,40 @@
-import { SetStateAction } from "react";
+import { InputHTMLAttributes } from "react";
 import styled from "styled-components";
+
+const Input = ({
+  onChange,
+  onBlur,
+  onKeyDown,
+  placeholder,
+  value,
+  id,
+  color,
+}: InputProps) => {
+  return (
+    <FormGroup onClick={(e) => e.stopPropagation()}>
+      <FormField
+        type="input"
+        className="form__field"
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
+        name={id}
+        id={id}
+        required
+        autoFocus
+        color={color}
+      />
+
+      <FormLabel htmlFor={id} className="form__label">
+        {placeholder}
+      </FormLabel>
+    </FormGroup>
+  );
+};
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 const FormGroup = styled.div`
   position: relative;
@@ -56,41 +91,4 @@ const FormLabel = styled.label`
   color: $gray;
 `;
 
-interface InputProps {
-  label: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string;
-  id: string;
-  onBlur?: () => void;
-  color?: string;
-}
-export const Input = ({
-  label,
-  onChange,
-  value,
-  id,
-  color,
-  onBlur,
-}: InputProps) => {
-  return (
-    <FormGroup>
-      <FormField
-        type="input"
-        className="form__field"
-        placeholder={label}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        name={id}
-        id={id}
-        required
-        autoFocus
-        color={color}
-      />
-
-      <FormLabel htmlFor={id} className="form__label">
-        {label}
-      </FormLabel>
-    </FormGroup>
-  );
-};
+export default Input;
