@@ -3,21 +3,19 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useState, useMemo } from "react";
 
 // components
-import { EditText } from "./EditText";
-import { Card } from "./Card";
-import { Input } from "./ui";
-import { IconButton } from "./ui";
-import { useAppContext } from "../contexts/AppContext";
-import { ListsType } from "../types";
-import Button from "./ui/Buttons/Button";
+import { EditText } from "../EditText";
+import { Card } from "../Card";
+import { IconButton } from "../ui";
+import { useAppContext } from "../../contexts/AppContext";
+import { ListsType } from "../../types";
+import { TextButton } from "../ui";
 
-export const List = ({ name, onDelete, id, lists }: ListProps) => {
+const List = ({ name, onDelete, id }: ListProps) => {
   const { updateListName, cards, addCard } = useAppContext();
   const [listName, setListName] = useState(name || "");
   const [cardName, setCardName] = useState("");
   const [startEditingListName, setStartEditingListName] = useState(false);
   const [startTypingCardName, setStartTypingCardName] = useState(false);
-  const [isAddingNewCard, setIsAddingNewCard] = useState(false);
 
   const currentCards = useMemo(
     () => cards.filter((card) => card.listID === id),
@@ -42,7 +40,7 @@ export const List = ({ name, onDelete, id, lists }: ListProps) => {
       </ListHeader>
       <ListContent>
         {currentCards.map((card) => (
-          <Card key={card.id} title={card.cardTitle} id={card.id} />
+          <Card key={card.id} card={card} />
         ))}
 
         <EditText
@@ -51,19 +49,21 @@ export const List = ({ name, onDelete, id, lists }: ListProps) => {
           startEditing={startTypingCardName}
           setStartEditing={setStartTypingCardName}
           store={() => {
-            addCard(cardName, id);
+            addCard(cardName, id, listName);
             setCardName("");
           }}
           placeholder="Create new card..."
         >
-          <Button variant="text" onClick={() => setStartTypingCardName(true)}>
+          <TextButton onClick={() => setStartTypingCardName(true)}>
             Add new card
-          </Button>
+          </TextButton>
         </EditText>
       </ListContent>
     </ListContainer>
   );
 };
+
+export default List;
 
 type ListProps = {
   name: string;

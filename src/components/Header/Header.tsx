@@ -1,12 +1,12 @@
-import { useAppContext } from "../contexts/AppContext";
+import { useAppContext } from "../../contexts/AppContext";
 import { MdModeEdit } from "react-icons/md";
 import { useState } from "react";
 import styled from "styled-components";
 // components
-import { IconButton } from "./ui";
-import { EditText } from "./EditText";
+import { IconButton } from "../ui";
+import { EditText } from "../EditText";
 
-export const Header = () => {
+const Header = () => {
   const { username, storeUsername } = useAppContext();
   const [name, setName] = useState(username || "");
   const [startEditing, setStartEditing] = useState(false);
@@ -34,6 +34,7 @@ export const Header = () => {
   );
 };
 
+export default Header;
 const HeaderContainer = styled.header`
   display: flex;
   gap: 0.5rem;

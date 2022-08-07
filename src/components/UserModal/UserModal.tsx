@@ -1,13 +1,13 @@
 // React
 import { useState } from "react";
 // Context
-import { useAppContext } from "../contexts/AppContext";
+import { useAppContext } from "../../contexts/AppContext";
 
 // Components
-import { Modal } from "../components/ui";
-import { Input } from "../components/ui";
+import { Modal } from "../ui";
+import { Input } from "../ui";
 
-export const UserModal = () => {
+const UserModal = () => {
   const { username, storeUsername } = useAppContext();
   const [name, setName] = useState("");
 
@@ -36,3 +36,5 @@ export const UserModal = () => {
     </>
   );
 };
+
+export default UserModal;

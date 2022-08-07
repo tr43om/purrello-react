@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { List } from "./List";
-import styled from "styled-components";
-import { Input } from "./ui";
-import { Button } from "./ui";
-import { MdAdd } from "react-icons/md";
-import { useAppContext } from "../contexts/AppContext";
 
-export const Lists = () => {
+import styled from "styled-components";
+import { ContainedButton } from "../ui";
+import { MdAdd } from "react-icons/md";
+import { useAppContext } from "../../contexts/AppContext";
+
+// components
+import { Input } from "../ui";
+import { List } from "../List";
+
+const Lists = () => {
   const [newList, setNewList] = useState("");
   const { addList, deleteList, lists } = useAppContext();
   const [isInputActive, setIsInputActive] = useState(false);
@@ -45,18 +48,17 @@ export const Lists = () => {
             />
           </form>
         ) : (
-          <Button
-            variant="outlined"
-            onClick={() => setIsInputActive((prev) => !prev)}
-          >
+          <ContainedButton onClick={() => setIsInputActive((prev) => !prev)}>
             <span>Add list</span>
             <MdAdd />
-          </Button>
+          </ContainedButton>
         )}
       </div>
     </ListsContainer>
   );
 };
+
+export default Lists;
 
 const ListsContainer = styled.main`
   display: grid;

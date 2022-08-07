@@ -11,6 +11,7 @@ export default createGlobalStyle`
 
 :root {
   --c-primary: #F70A8D;
+  --c-text-secondary: #9b9b9b;
 }
 
 html, body {

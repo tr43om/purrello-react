@@ -8,13 +8,13 @@ const Input = ({
   placeholder,
   value,
   id,
-  color,
+  $color,
+  type = "text",
 }: InputProps) => {
   return (
     <FormGroup onClick={(e) => e.stopPropagation()}>
       <FormField
-        type="input"
-        className="form__field"
+        type={type}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
@@ -24,17 +24,20 @@ const Input = ({
         id={id}
         required
         autoFocus
-        color={color}
+        color={$color}
       />
 
-      <FormLabel htmlFor={id} className="form__label">
-        {placeholder}
-      </FormLabel>
+      <FormLabel htmlFor={id}>{placeholder}</FormLabel>
     </FormGroup>
   );
 };
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  $color?: string;
+}
+type FormFieldProps = {
+  color?: string;
+};
 
 const FormGroup = styled.div`
   position: relative;
@@ -42,14 +45,14 @@ const FormGroup = styled.div`
   width: 100%;
 `;
 
-const FormField = styled.input`
+const FormField = styled.input<FormFieldProps>`
   font-family: inherit;
   width: 100%;
   border: 0;
-  border-bottom: 2px solid #9b9b9b;
+  border-bottom: 2px solid var(--c-text-secondary);
   outline: 0;
-  font-size: 1.3rem;
-  color: ${(props) => (props.color ? props.color : "#000")};
+  font-size: 1rem;
+  color: ${(props) => (props.color ? props.color : " var(--c-primary)")};
   padding: 7px 0;
   background: transparent;
   transition: border-color 0.2s;
@@ -58,20 +61,20 @@ const FormField = styled.input`
     color: transparent;
   }
 
-  &:placeholder-shown ~ .form__label {
-    font-size: 1.3rem;
+  &:placeholder-shown ~ * {
+    font-size: 1rem;
     cursor: text;
     top: 20px;
   }
 
   &:focus {
-    ~ .form__label {
+    ~ * {
       position: absolute;
       top: 0;
       display: block;
       transition: 0.2s;
       font-size: 1rem;
-      color: #861657;
+      color: var(--c-primary);
       font-weight: 700;
     }
     padding-bottom: 6px;
@@ -88,7 +91,7 @@ const FormLabel = styled.label`
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: $gray;
+  color: var(--c-text-secondary);
 `;
 
 export default Input;

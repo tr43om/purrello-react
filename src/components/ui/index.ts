@@ -1,3 +1,3 @@
-export * from "./Buttons";
-export * from "./Input";
+export * from "./buttons";
+export * from "./inputs";
 export * from "./Modals";

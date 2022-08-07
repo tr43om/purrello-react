@@ -1,6 +1,3 @@
-// React
-import { useState } from "react";
-
 // toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,7 +9,7 @@ import { AppContextProvider } from "./contexts/AppContext";
 import Global from "./styles/global";
 
 // Components
-import { Container } from "./components/layouts";
+import { Container } from "./components/layouts/Container";
 import { Lists } from "./components/Lists";
 import { Header } from "./components/Header";
 import { UserModal } from "./components/UserModal";

@@ -1,14 +1,16 @@
 import styled from "styled-components";
 import { MdModeEdit } from "react-icons/md";
-import { IconButton, Modal } from "./ui";
+import { IconButton, Modal } from "../ui";
 import { useState } from "react";
-import { useAppContext } from "../contexts/AppContext";
-import { EditText } from "./EditText";
-import { CardDetails } from "./CardDetails";
+import { useAppContext } from "../../contexts/AppContext";
+import { CardType } from "../../types";
+// components
+import { EditText } from "../EditText";
+import { CardDetails } from "../CardDetails";
 
-export const Card = ({ title, id }: CardProps) => {
+const Card = ({ card }: CardProps) => {
   const [startEditing, setStartEditing] = useState(false);
-  const [cardTitle, setCardTitle] = useState(title);
+  const [cardTitle, setCardTitle] = useState(card.cardTitle);
   const { updateCardName } = useAppContext();
   const [isHovering, setIsHovering] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -18,7 +20,7 @@ export const Card = ({ title, id }: CardProps) => {
   const handleMouseOut = () => setIsHovering(false);
 
   const storeCardName = () => {
-    updateCardName(id, cardTitle);
+    updateCardName(card.id, cardTitle);
     setStartEditing(false);
   };
 
@@ -37,7 +39,7 @@ export const Card = ({ title, id }: CardProps) => {
           store={storeCardName}
           placeholder="Edit card name..."
         >
-          <p>{title}</p>
+          <p>{cardTitle}</p>
           {isHovering && (
             <IconButton
               size="1rem"
@@ -51,15 +53,19 @@ export const Card = ({ title, id }: CardProps) => {
         </EditText>
       </CardContainer>
       {showDetails && (
-        <Modal close={() => setShowDetails(false)}>
-          <CardDetails title={cardTitle} />
+        <Modal close={() => setShowDetails(false)} $align="stretch">
+          <CardDetails card={card} />
         </Modal>
       )}
     </>
   );
 };
 
-type CardProps = { title: string; id: string };
+export default Card;
+
+type CardProps = {
+  card: CardType;
+};
 
 const CardContainer = styled.div`
   display: flex;

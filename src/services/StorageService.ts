@@ -1,9 +1,10 @@
-import { ListsType, CardsType } from "../types";
+import { ListsType, CardsType, CommentsType } from "../types";
 
 export enum StorageKeys {
   LISTS = "lists",
   USERNAME = "name",
   CARDS = "cards",
+  COMMENTS = "comments",
 }
 
 class StorageService {
@@ -21,6 +22,14 @@ class StorageService {
 
   setCards(cards: CardsType) {
     return localStorage.setItem(StorageKeys.CARDS, JSON.stringify(cards));
+  }
+
+  getComments(): CommentsType {
+    return JSON.parse(localStorage.getItem(StorageKeys.COMMENTS) || "null");
+  }
+
+  setComments(comments: CommentsType) {
+    return localStorage.setItem(StorageKeys.COMMENTS, JSON.stringify(comments));
   }
 
   getUsername() {

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { ReactNode, KeyboardEvent } from "react";
 
-const Modal = ({ children, close }: ModalProps) => {
+const Modal = ({ children, close, $align }: ModalProps) => {
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     console.log("first");
     if (event.key === "Escape") {
@@ -10,7 +10,7 @@ const Modal = ({ children, close }: ModalProps) => {
   };
   return (
     <ModalContainer onClick={close} tabIndex={1}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+      <ModalContent onClick={(e) => e.stopPropagation()} $align={$align}>
         {children}
       </ModalContent>
     </ModalContainer>
@@ -20,7 +20,9 @@ const Modal = ({ children, close }: ModalProps) => {
 interface ModalProps {
   children: ReactNode;
   close?: () => void;
+  $align?: string;
 }
+
 const ModalContainer = styled.div`
   height: 100vh;
   width: 100vw;
@@ -34,15 +36,24 @@ const ModalContainer = styled.div`
   align-items: center;
   transition: 0.5s;
 `;
-const ModalContent = styled.section`
+const ModalContent = styled.section<{
+  $align?: string;
+}>`
   display: grid;
   gap: 1.5rem;
-  justify-content: center;
-  width: 30vw;
+  justify-content: ${(p) => p.$align || "center"};
+  width: 100%;
+  max-width: 90vw;
+  max-height: 85vh;
   padding: 2rem;
   background-color: #fff;
   color: #000;
   border-radius: 0.5rem;
+  overflow-y: auto;
+
+  @media screen and (min-width: 900px) {
+    max-width: 60vw;
+  }
 `;
 
 export default Modal;
