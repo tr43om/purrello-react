@@ -1,7 +1,7 @@
-export type ListsType = Array<{
+export type ListType = {
   id: string;
   listName: string;
-}>;
+};
 
 export type CardType = {
   id: string;
@@ -24,6 +24,8 @@ export type CommentType = {
   createdAt: string;
   cardID: string;
 };
+
+export type ListsType = Array<ListType>;
 
 export type CommentsType = Array<CommentType>;
 
