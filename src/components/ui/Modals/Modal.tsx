@@ -43,7 +43,9 @@ const ModalContent = styled.section<{
   gap: 1.5rem;
   justify-content: ${(p) => p.$align || "center"};
   width: 100%;
+  align-content: center;
   max-width: 90vw;
+  min-height: 50vh;
   max-height: 85vh;
   padding: 2rem;
   background-color: #fff;

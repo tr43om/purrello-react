@@ -42,7 +42,7 @@ const Card = ({ card }: CardProps) => {
           <p>{cardTitle}</p>
           {isHovering && (
             <IconButton
-              size="1rem"
+              $size="1rem"
               icon={<MdModeEdit />}
               onClick={(e) => {
                 e.stopPropagation();

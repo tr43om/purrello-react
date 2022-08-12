@@ -53,6 +53,7 @@ const EditText = ({
             onBlur={onBlur}
             placeholder={placeholder}
             id={uuid()}
+            name="editText"
             color="#fff"
           />
         ) : (
@@ -69,6 +70,7 @@ const EditText = ({
         onBlur={onBlur}
         placeholder={placeholder}
         id={uuid()}
+        name="editText"
         color="#fff"
       />
     );

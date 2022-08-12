@@ -1,14 +1,16 @@
 import { InputHTMLAttributes } from "react";
 import styled from "styled-components";
 
+// react-hook-form
+import { RegisterOptions } from "react-hook-form";
+
 const Input = ({
-  onChange,
-  onBlur,
   onKeyDown,
   placeholder,
-  value,
   id,
   $color,
+  onChange,
+  value,
   type = "text",
 }: InputProps) => {
   return (
@@ -16,15 +18,12 @@ const Input = ({
       <FormField
         type={type}
         placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
         onKeyDown={onKeyDown}
-        name={id}
         id={id}
-        required
         autoFocus
         color={$color}
+        onChange={onChange}
+        value={value}
       />
 
       <FormLabel htmlFor={id}>{placeholder}</FormLabel>
@@ -34,6 +33,8 @@ const Input = ({
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   $color?: string;
+  options?: RegisterOptions;
+  id: string;
 }
 type FormFieldProps = {
   color?: string;
@@ -41,7 +42,7 @@ type FormFieldProps = {
 
 const FormGroup = styled.div`
   position: relative;
-  padding: 15px 0 0;
+  padding: 20px 0 0;
   width: 100%;
 `;
 

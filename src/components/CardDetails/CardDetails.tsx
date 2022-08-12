@@ -58,7 +58,7 @@ const CardDetails = ({ card }: CardDetailsProps) => {
           {card.cardDescription && (
             <IconButton
               icon={<MdModeEdit />}
-              size="1rem"
+              $size="1rem"
               onClick={() => setStartEditing(true)}
             />
           )}

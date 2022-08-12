@@ -25,7 +25,7 @@ const Header = () => {
       </EditText>
       {!startEditing && (
         <IconButton
-          size="1rem"
+          $size="1rem"
           onClick={() => setStartEditing(true)}
           icon={<MdModeEdit />}
         />

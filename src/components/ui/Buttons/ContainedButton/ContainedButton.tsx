@@ -1,8 +1,12 @@
 import { ReactNode, ButtonHTMLAttributes } from "react";
 import styled from "styled-components";
 
-const ContainedButton = ({ children, onClick }: ButtonProps) => {
-  return <Root onClick={onClick}>{children}</Root>;
+const ContainedButton = ({ children, onClick, disabled }: ButtonProps) => {
+  return (
+    <Root onClick={onClick} disabled={disabled}>
+      {children}
+    </Root>
+  );
 };
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -19,7 +23,7 @@ const Root = styled.button`
   color: #fff;
   background-color: var(--c-primary);
   transition: all 0.3s;
-  opacity: 0.8;
+  opacity: ${(p) => (p.disabled ? 0.3 : 0.8)};
   border-radius: 100px;
 
   &:hover {

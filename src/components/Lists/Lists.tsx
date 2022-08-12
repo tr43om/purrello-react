@@ -45,6 +45,7 @@ const Lists = () => {
               id="list"
               onBlur={() => setIsInputActive(false)}
               color="#fff"
+              name="listsInput"
             />
           </form>
         ) : (

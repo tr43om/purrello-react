@@ -39,12 +39,12 @@ export default function Comment({ data }: CommentProps) {
       <Actions>
         <IconButton
           icon={<MdDelete />}
-          size="1rem"
+          $size="1rem"
           onClick={() => deleteComment(data.id)}
         />
         <IconButton
           icon={<MdModeEdit />}
-          size="1rem"
+          $size="1rem"
           onClick={() => setStartEditingComment((prev) => !prev)}
         />
       </Actions>
