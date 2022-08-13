@@ -6,20 +6,36 @@ import { useState, useMemo } from "react";
 import { EditText } from "../EditText";
 import { Card } from "../Card";
 import { IconButton } from "../ui";
-import { useAppContext } from "../../contexts/AppContext";
-import { ListsType } from "../../types";
-import { TextButton } from "../ui";
 
-const List = ({ name, onDelete, id }: ListProps) => {
-  const { updateListName, cards, addCard } = useAppContext();
-  const [listName, setListName] = useState(name || "");
+import { ListType } from "../../types";
+import { TextButton } from "../ui";
+import { useSelector } from "react-redux";
+import { selectList } from "../../store";
+import { RootState } from "../../store/store";
+import { ListsActions } from "../../store";
+import { useDispatch } from "react-redux";
+import { selectCards } from "../../store/ducks/cards/selectors";
+import { CardsActions } from "../../store";
+import { selectUser } from "../../store";
+
+const List = ({ onDelete, list }: ListProps) => {
+  const cards = useSelector(selectCards);
+  const { username } = useSelector(selectUser);
+  const [listName, setListName] = useState(list.listName || "");
   const [cardName, setCardName] = useState("");
   const [startEditingListName, setStartEditingListName] = useState(false);
   const [startTypingCardName, setStartTypingCardName] = useState(false);
+  const currentList = useSelector<RootState>((state) =>
+    selectList(state, list.id)
+  );
+  const dispatch = useDispatch();
+
+  const { updateList } = ListsActions;
+  const { addCard } = CardsActions;
 
   const currentCards = useMemo(
-    () => cards.filter((card) => card.listID === id),
-    [cards, id]
+    () => cards.filter((card) => card.listID === list.id),
+    [cards, list.id]
   );
 
   return (
@@ -30,13 +46,16 @@ const List = ({ name, onDelete, id }: ListProps) => {
           setValue={setListName}
           startEditing={startEditingListName}
           setStartEditing={setStartEditingListName}
-          store={() => updateListName(id, listName)}
+          store={() => dispatch(updateList({ id: list.id, listName }))}
           placeholder="Edit card name..."
         >
-          <h3 onClick={() => setStartEditingListName(true)}>{name}</h3>
+          <h3 onClick={() => setStartEditingListName(true)}>{list.listName}</h3>
         </EditText>
 
-        <IconButton onClick={() => onDelete(id)} icon={<MdDeleteOutline />} />
+        <IconButton
+          onClick={() => onDelete(list.id)}
+          icon={<MdDeleteOutline />}
+        />
       </ListHeader>
       <ListContent>
         {currentCards.map((card) => (
@@ -49,7 +68,17 @@ const List = ({ name, onDelete, id }: ListProps) => {
           startEditing={startTypingCardName}
           setStartEditing={setStartTypingCardName}
           store={() => {
-            addCard(cardName, id, listName);
+            dispatch(
+              addCard({
+                cardTitle: cardName,
+                listID: list.id,
+                category: listName,
+                createdBy: {
+                  username,
+                  photoURL: `https://ui-avatars.com/api/?name=${username}&background=random&rounded=true`,
+                },
+              })
+            );
             setCardName("");
           }}
           placeholder="Create new card..."
@@ -66,10 +95,8 @@ const List = ({ name, onDelete, id }: ListProps) => {
 export default List;
 
 type ListProps = {
-  name: string;
-  id: string;
+  list: ListType;
   onDelete: (id: string) => void;
-  lists: ListsType;
 };
 
 const ListContainer = styled.div`

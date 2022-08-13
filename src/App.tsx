@@ -2,9 +2,6 @@
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Context
-import { AppContextProvider } from "./contexts/AppContext";
-
 // Styles
 import Global from "./styles/global";
 
@@ -16,7 +13,7 @@ import { UserModal } from "./components/UserModal";
 
 const App = () => {
   return (
-    <AppContextProvider>
+    <>
       <Container>
         <Header />
         <Lists />
@@ -25,7 +22,7 @@ const App = () => {
       <UserModal />
       <Global />
       <ToastContainer />
-    </AppContextProvider>
+    </>
   );
 };
 

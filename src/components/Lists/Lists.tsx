@@ -1,22 +1,31 @@
 import { useState } from "react";
 
 import styled from "styled-components";
-import { ContainedButton } from "../ui";
+
+// icons
 import { MdAdd } from "react-icons/md";
-import { useAppContext } from "../../contexts/AppContext";
 
 // components
 import { Input } from "../ui";
 import { List } from "../List";
+import { ContainedButton } from "../ui";
+
+// redux
+import { useSelector, useDispatch } from "react-redux";
+import { ListsActions } from "../../store";
+import { selectLists } from "../../store";
 
 const Lists = () => {
+  const lists = useSelector(selectLists);
+
+  const dispatch = useDispatch();
   const [newList, setNewList] = useState("");
-  const { addList, deleteList, lists } = useAppContext();
   const [isInputActive, setIsInputActive] = useState(false);
+  const { addList, deleteList } = ListsActions;
 
   const addNewList = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addList(newList);
+    dispatch(addList(newList));
     setNewList("");
     setIsInputActive((prev) => !prev);
   };
@@ -26,11 +35,9 @@ const Lists = () => {
       {lists &&
         lists.map((list) => (
           <List
+            list={list}
             key={list.id}
-            id={list.id}
-            lists={lists}
-            name={list.listName}
-            onDelete={deleteList}
+            onDelete={(id) => dispatch(deleteList(id))}
           />
         ))}
       <div>

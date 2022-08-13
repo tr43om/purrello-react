@@ -1,7 +1,11 @@
-export type ListsType = Array<{
+export type ListType = {
   id: string;
   listName: string;
-}>;
+};
+
+export type UserType = {
+  username: string;
+};
 
 export type CardType = {
   id: string;
@@ -16,6 +20,11 @@ export type CardType = {
   listID: string;
 };
 
+export type CardInputType = Pick<
+  CardType,
+  "cardTitle" | "listID" | "cardDescription" | "category" | "createdBy"
+>;
+
 export type CommentType = {
   id: string;
   content: string;
@@ -24,6 +33,13 @@ export type CommentType = {
   createdAt: string;
   cardID: string;
 };
+
+export type CommentInputType = Pick<
+  CommentType,
+  "content" | "username" | "cardID"
+>;
+
+export type ListsType = Array<ListType>;
 
 export type CommentsType = Array<CommentType>;
 

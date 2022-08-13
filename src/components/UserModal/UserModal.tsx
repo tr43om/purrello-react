@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import styled from "styled-components";
 // react-hook-form
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -29,6 +30,28 @@ const UserModal = () => {
 
   const onSubmit: SubmitHandler<any> = (data) => {
     storeUsername(data.username);
+=======
+// React
+import { useState } from "react";
+
+// Components
+import { Modal } from "../ui";
+import { Input } from "../ui";
+// redux
+import { useSelector } from "react-redux";
+import { selectUser } from "../../store";
+import { UserActions } from "../../store";
+import { useDispatch } from "react-redux";
+
+const UserModal = () => {
+  const [name, setName] = useState("");
+  const { username } = useSelector(selectUser);
+
+  const dispatch = useDispatch();
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(UserActions.changeUsername(name));
+>>>>>>> feature/implementing-redux
   };
 
   return (

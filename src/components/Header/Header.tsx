@@ -1,4 +1,3 @@
-import { useAppContext } from "../../contexts/AppContext";
 import { MdModeEdit } from "react-icons/md";
 import { useState } from "react";
 import styled from "styled-components";
@@ -6,10 +5,17 @@ import styled from "styled-components";
 import { IconButton } from "../ui";
 import { EditText } from "../EditText";
 
+// redux
+import { useSelector } from "react-redux";
+import { selectUser } from "../../store";
+import { UserActions } from "../../store";
+import { useDispatch } from "react-redux";
+
 const Header = () => {
-  const { username, storeUsername } = useAppContext();
+  const { username } = useSelector(selectUser);
   const [name, setName] = useState(username || "");
   const [startEditing, setStartEditing] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <HeaderContainer>
@@ -18,7 +24,7 @@ const Header = () => {
         setValue={setName}
         startEditing={startEditing}
         setStartEditing={setStartEditing}
-        store={() => storeUsername(name)}
+        store={() => dispatch(UserActions.changeUsername(name))}
         placeholder="Edit card name..."
       >
         <h2>👋 Hello, {username ? username : "Guest"}</h2>
