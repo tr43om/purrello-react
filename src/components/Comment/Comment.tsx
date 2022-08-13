@@ -1,18 +1,26 @@
 import { CommentType } from "../../types";
 import styled from "styled-components";
 import { parseISO, formatDistanceToNow } from "date-fns";
-import { useAppContext } from "../../contexts/AppContext";
 import { ContainedButton, IconButton, TextArea } from "../ui";
 import { MdDelete } from "react-icons/md";
 import { MdModeEdit } from "react-icons/md";
 import { useState } from "react";
+
+// redux
+import { useDispatch } from "react-redux";
+import { CommentsActions } from "../../store";
 export default function Comment({ data }: CommentProps) {
-  const { deleteComment, updateComment } = useAppContext();
   const [comment, setComment] = useState(data.content || "");
   const [startEditingComment, setStartEditingComment] = useState(false);
+  const dispatch = useDispatch();
 
   const handleUpdateComment = () => {
-    updateComment(data.id, comment);
+    dispatch(
+      CommentsActions.updateComment({
+        id: data.id,
+        comment,
+      })
+    );
     setStartEditingComment(false);
   };
   return (
@@ -40,7 +48,7 @@ export default function Comment({ data }: CommentProps) {
         <IconButton
           icon={<MdDelete />}
           size="1rem"
-          onClick={() => deleteComment(data.id)}
+          onClick={() => dispatch(CommentsActions.deleteComment(data.id))}
         />
         <IconButton
           icon={<MdModeEdit />}

@@ -19,15 +19,6 @@ const initialState: ListsSliceState = {
 
 const reducers = {
   addList: (state: ListsSliceState, action: PayloadAction<string>) => {
-    // state.lists = [
-    //   ...state.lists,
-    //   {
-    //     id: uuid(),
-    //     listName: action.payload,
-    //   },
-    // ];
-
-    // immer ?
     state.lists.push({
       id: uuid(),
       listName: action.payload,

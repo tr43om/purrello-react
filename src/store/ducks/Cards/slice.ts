@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { CardsType, CardType } from "../../../types";
+import { CardsType, CardType, CardInputType } from "../../../types";
 import { v4 as uuid } from "uuid";
 import _ from "lodash";
+import { username } from "../user/selectors";
+// redux
 
 interface CardsSliceState {
   cards: CardsType;
@@ -13,18 +15,39 @@ const initialState: CardsSliceState = {
 };
 
 const reducers = {
-  addCard: (state: CardsSliceState, action: PayloadAction<CardType>) => {
+  addCard: (state: CardsSliceState, action: PayloadAction<CardInputType>) => {
     state.cards.push({
       id: uuid(),
       cardTitle: action.payload.cardTitle,
       listID: action.payload.listID,
-      category: action.payload.listID,
+      category: action.payload.category,
       createdAt: new Date().toISOString(),
       createdBy: {
         username: action.payload.createdBy.username,
-        photoURL: `https://ui-avatars.com/api/?name=aboba&background=random&rounded=true`,
+        photoURL: action.payload.createdBy.photoURL,
       },
     });
+  },
+  updateCardName: (
+    state: CardsSliceState,
+    action: PayloadAction<{ cardTitle: string; id: string }>
+  ) => {
+    state.cards[
+      _.findIndex(state.cards, (card) => card.id === action.payload.id)
+    ].cardTitle = action.payload.cardTitle;
+  },
+
+  updateCardDescription: (
+    state: CardsSliceState,
+    action: PayloadAction<{ desc: string; id: string }>
+  ) => {
+    state.cards[
+      _.findIndex(state.cards, (card) => card.id === action.payload.id)
+    ].cardDescription = action.payload.desc;
+  },
+
+  deleteCard: (state: CardsSliceState, action: PayloadAction<string>) => {
+    state.cards = state.cards.filter((card) => card.id !== action.payload);
   },
 };
 

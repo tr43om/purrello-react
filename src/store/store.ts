@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { reducers } from "./ducks";
+import { TypedUseSelectorHook } from "react-redux";
 
 const rootReducer = combineReducers(reducers);
 

@@ -6,7 +6,7 @@ import { useState, useMemo } from "react";
 import { EditText } from "../EditText";
 import { Card } from "../Card";
 import { IconButton } from "../ui";
-import { useAppContext } from "../../contexts/AppContext";
+
 import { ListType } from "../../types";
 import { TextButton } from "../ui";
 import { useSelector } from "react-redux";
@@ -14,10 +14,13 @@ import { selectList } from "../../store";
 import { RootState } from "../../store/store";
 import { ListsActions } from "../../store";
 import { useDispatch } from "react-redux";
-import { selectCards } from "../../store/ducks/Cards/selectors";
+import { selectCards } from "../../store/ducks/cards/selectors";
+import { CardsActions } from "../../store";
+import { selectUser } from "../../store";
 
 const List = ({ onDelete, list }: ListProps) => {
-  const { updateListName, cards, addCard } = useAppContext();
+  const cards = useSelector(selectCards);
+  const { username } = useSelector(selectUser);
   const [listName, setListName] = useState(list.listName || "");
   const [cardName, setCardName] = useState("");
   const [startEditingListName, setStartEditingListName] = useState(false);
@@ -28,8 +31,7 @@ const List = ({ onDelete, list }: ListProps) => {
   const dispatch = useDispatch();
 
   const { updateList } = ListsActions;
-
-  console.log("cuurent", currentList);
+  const { addCard } = CardsActions;
 
   const currentCards = useMemo(
     () => cards.filter((card) => card.listID === list.id),
@@ -66,7 +68,17 @@ const List = ({ onDelete, list }: ListProps) => {
           startEditing={startTypingCardName}
           setStartEditing={setStartTypingCardName}
           store={() => {
-            addCard(cardName, list.id, listName);
+            dispatch(
+              addCard({
+                cardTitle: cardName,
+                listID: list.id,
+                category: listName,
+                createdBy: {
+                  username,
+                  photoURL: `https://ui-avatars.com/api/?name=${username}&background=random&rounded=true`,
+                },
+              })
+            );
             setCardName("");
           }}
           placeholder="Create new card..."

@@ -1,6 +1,5 @@
 import { CardType } from "../../types";
 import { useState, useMemo } from "react";
-import { useAppContext } from "../../contexts/AppContext";
 import { TextButton, TextArea, ContainedButton } from "../ui";
 import { MdModeEdit, MdSend } from "react-icons/md";
 import styled from "styled-components";
@@ -12,6 +11,14 @@ import { EditText } from "../EditText";
 import { IconButton } from "../ui";
 import { Comment } from "../Comment";
 
+// redux
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { selectComments } from "../../store";
+import { CommentsActions } from "../../store/ducks/comments/slice";
+import { selectUser } from "../../store/ducks/user/selectors";
+import { CardsActions } from "../../store/ducks/cards/slice";
+
 const CardDetails = ({ card }: CardDetailsProps) => {
   const [startEditing, setStartEditing] = useState(false);
   const [cardDescription, setCardDescription] = useState(
@@ -19,8 +26,9 @@ const CardDetails = ({ card }: CardDetailsProps) => {
   );
   const [comment, setComment] = useState("");
 
-  const { updateCardDescription, addComment, comments, username, deleteCard } =
-    useAppContext();
+  const comments = useSelector(selectComments);
+  const { username } = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   const currentComments = useMemo(
     () => comments.filter((comment) => comment.cardID === card.id),
@@ -28,14 +36,26 @@ const CardDetails = ({ card }: CardDetailsProps) => {
   );
 
   const storeCardDescription = () => {
-    updateCardDescription(card.id, cardDescription);
+    dispatch(
+      CardsActions.updateCardDescription({
+        id: card.id,
+        desc: cardDescription,
+      })
+    );
     setStartEditing(false);
   };
 
   const storeComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const avatar = card.createdBy.photoURL;
-    addComment(comment, avatar, username, card.id);
+
+    dispatch(
+      CommentsActions.addComment({
+        content: comment,
+        username,
+        cardID: card.id,
+      })
+    );
+
     setComment("");
   };
 
@@ -48,7 +68,9 @@ const CardDetails = ({ card }: CardDetailsProps) => {
             in list {card.category}
           </p>
         </div>
-        <ContainedButton onClick={() => deleteCard(card.id)}>
+        <ContainedButton
+          onClick={() => dispatch(CardsActions.deleteCard(card.id))}
+        >
           Delete card
         </ContainedButton>
       </DetailsHeader>
@@ -97,9 +119,7 @@ const CardDetails = ({ card }: CardDetailsProps) => {
           <Activity>
             <b>{card.createdBy.username}</b> created this card to{" "}
             {card.category} list
-            <p style={{}}>
-              {formatDistanceToNow(parseISO(card.createdAt))} ago
-            </p>
+            <p>{formatDistanceToNow(parseISO(card.createdAt))} ago</p>
           </Activity>
 
           <DetailsComments>

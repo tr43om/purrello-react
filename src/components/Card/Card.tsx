@@ -2,25 +2,34 @@ import styled from "styled-components";
 import { MdModeEdit } from "react-icons/md";
 import { IconButton, Modal } from "../ui";
 import { useState } from "react";
-import { useAppContext } from "../../contexts/AppContext";
 import { CardType } from "../../types";
 // components
 import { EditText } from "../EditText";
 import { CardDetails } from "../CardDetails";
 
+// redux
+import { useDispatch } from "react-redux";
+import { CardsActions } from "../../store";
+
 const Card = ({ card }: CardProps) => {
   const [startEditing, setStartEditing] = useState(false);
   const [cardTitle, setCardTitle] = useState(card.cardTitle);
-  const { updateCardName } = useAppContext();
   const [isHovering, setIsHovering] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleMouseOver = () => setIsHovering(true);
 
   const handleMouseOut = () => setIsHovering(false);
 
   const storeCardName = () => {
-    updateCardName(card.id, cardTitle);
+    dispatch(
+      CardsActions.updateCardName({
+        cardTitle: cardTitle,
+        id: card.id,
+      })
+    );
     setStartEditing(false);
   };
 
