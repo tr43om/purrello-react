@@ -1,23 +1,33 @@
-import { CardType } from "../../types";
 import { useState, useMemo } from "react";
 import { useAppContext } from "../../contexts/AppContext";
-import { TextButton, TextArea, ContainedButton } from "../ui";
-import { MdModeEdit, MdSend } from "react-icons/md";
+
 import styled from "styled-components";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/fp";
+import { SubmitHandler } from "react-hook-form";
+import * as yup from "yup";
+
+// types
+import { CardType } from "../../types";
 
 // components
 import { EditText } from "../EditText";
-import { IconButton } from "../ui";
+import { TextButton, IconButton, TextArea, ContainedButton } from "../ui";
 import { Comment } from "../Comment";
+import { FormInput } from "../FormInput";
+
+// icons
+import { MdModeEdit, MdSend } from "react-icons/md";
 
 const CardDetails = ({ card }: CardDetailsProps) => {
   const [startEditing, setStartEditing] = useState(false);
   const [cardDescription, setCardDescription] = useState(
     card.cardDescription || ""
   );
-  const [comment, setComment] = useState("");
+
+  const schema = yup.object().shape({
+    comment: yup.string().min(1, "Comment should be at least 1 character"),
+  });
 
   const { updateCardDescription, addComment, comments, username, deleteCard } =
     useAppContext();
@@ -32,11 +42,10 @@ const CardDetails = ({ card }: CardDetailsProps) => {
     setStartEditing(false);
   };
 
-  const storeComment = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const storeComment: SubmitHandler<any> = (data) => {
     const avatar = card.createdBy.photoURL;
-    addComment(comment, avatar, username, card.id);
-    setComment("");
+    console.log("comment", data);
+    addComment(data.comment, avatar, username, card.id);
   };
 
   return (
@@ -82,15 +91,15 @@ const CardDetails = ({ card }: CardDetailsProps) => {
       </DetailsDescription>
       <DetailsActivity>
         <DetailsTitle>Activity</DetailsTitle>
-        <DetailsCommentField onSubmit={storeComment}>
+        <DetailsCommentField>
           <Avatar src={card.createdBy.photoURL} alt="avatar" />
-          <TextArea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="New comment..."
-            rows={2}
+          <FormInput
+            onSubmit={storeComment}
+            name="comment"
+            schema={schema}
+            type="textarea"
+            button={<IconButton icon={<MdSend />} $color="var(--c-primary)" />}
           />
-          <IconButton icon={<MdSend />} />
         </DetailsCommentField>
 
         <Activities>
@@ -104,7 +113,7 @@ const CardDetails = ({ card }: CardDetailsProps) => {
 
           <DetailsComments>
             {currentComments &&
-              currentComments.map((comment) => <Comment data={comment} />)}
+              currentComments.map((comment) => <Comment comment={comment} />)}
           </DetailsComments>
         </Activities>
       </DetailsActivity>
@@ -160,7 +169,7 @@ const DetailsComments = styled.div`
   display: grid;
   gap: 1rem;
 `;
-const DetailsCommentField = styled.form`
+const DetailsCommentField = styled.div`
   display: flex;
   gap: 0.7rem;
   align-items: flex-start;

@@ -6,45 +6,59 @@ import { ContainedButton, IconButton, TextArea } from "../ui";
 import { MdDelete } from "react-icons/md";
 import { MdModeEdit } from "react-icons/md";
 import { useState } from "react";
-export default function Comment({ data }: CommentProps) {
+import { FormInput } from "../FormInput";
+import { SubmitHandler } from "react-hook-form";
+import * as yup from "yup";
+
+export default function Comment({ comment }: CommentProps) {
   const { deleteComment, updateComment } = useAppContext();
-  const [comment, setComment] = useState(data.content || "");
+
   const [startEditingComment, setStartEditingComment] = useState(false);
 
-  const handleUpdateComment = () => {
-    updateComment(data.id, comment);
+  const schema = yup.object().shape({
+    editComment: yup.string().min(1, "Comment should be at least 1 character"),
+  });
+
+  const handleUpdateComment: SubmitHandler<any> = (data) => {
+    updateComment(comment.id, data.editComment);
+
     setStartEditingComment(false);
   };
   return (
     <CommentContainer>
       <CommentHeader>
-        <Avatar src={data.avatar} alt="avatar" />
+        <Avatar src={comment.avatar} alt="avatar" />
         <Info>
-          <Username>{data.username}</Username>
-          <Created>{formatDistanceToNow(parseISO(data.createdAt))} ago</Created>
+          <Username>{comment.username}</Username>
+          <Created>
+            {formatDistanceToNow(parseISO(comment.createdAt))} ago
+          </Created>
         </Info>
       </CommentHeader>
       {!startEditingComment ? (
-        <CommentBody>{data.content}</CommentBody>
+        <CommentBody>{comment.content}</CommentBody>
       ) : (
         <>
-          <TextArea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
+          <FormInput
+            onSubmit={handleUpdateComment}
+            name="editComment"
+            schema={schema}
+            type="textarea"
+            button={<ContainedButton>Save</ContainedButton>}
           />
-
-          <ContainedButton onClick={handleUpdateComment}>Save</ContainedButton>
         </>
       )}
       <Actions>
         <IconButton
           icon={<MdDelete />}
           $size="1rem"
-          onClick={() => deleteComment(data.id)}
+          $color="#000"
+          onClick={() => deleteComment(comment.id)}
         />
         <IconButton
           icon={<MdModeEdit />}
           $size="1rem"
+          $color="#000"
           onClick={() => setStartEditingComment((prev) => !prev)}
         />
       </Actions>
@@ -52,7 +66,7 @@ export default function Comment({ data }: CommentProps) {
   );
 }
 type CommentProps = {
-  data: CommentType;
+  comment: CommentType;
 };
 
 const CommentContainer = styled.div`

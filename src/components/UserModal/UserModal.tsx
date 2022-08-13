@@ -14,18 +14,20 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 // icons
 import { MdSend } from "react-icons/md";
+import FormInput from "../FormInput/FormInput";
 
 const UserModal = () => {
   const { username, storeUsername } = useAppContext();
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<DataType>({
-    resolver: yupResolver(schema),
+
+  const schema = yup.object().shape({
+    username: yup
+      .string()
+      .matches(/^([^0-9]*)$/, "Username should not contain numbers")
+      .min(3, "at least 3 characters")
+      .required("Username is a required field"),
   });
 
-  const onSubmit: SubmitHandler<DataType> = (data) => {
+  const onSubmit: SubmitHandler<any> = (data) => {
     storeUsername(data.username);
   };
 
@@ -33,32 +35,21 @@ const UserModal = () => {
     <>
       {!username && (
         <Modal $align="stretch">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Title>🎉 Welcome</Title>
-            <FieldContainer>
-              <Controller
-                control={control}
-                name="username"
-                render={({ field }) => (
-                  <Input
-                    id="username"
-                    placeholder="Type your name here..."
-                    onChange={(e) => field.onChange(e)}
-                    value={field.value}
-                  />
-                )}
-              />
+          <Title>🎉 Welcome</Title>
 
+          <FormInput
+            onSubmit={onSubmit}
+            name="username"
+            placeholder="Type your name..."
+            schema={schema}
+            button={
               <IconButton
                 icon={<MdSend />}
-                disabled={Boolean(errors?.username?.message)}
                 $color="var(--c-primary)"
                 $size="1.5rem"
               />
-            </FieldContainer>
-
-            {errors.username && <Error>{errors.username.message}</Error>}
-          </form>
+            }
+          />
         </Modal>
       )}
     </>
@@ -68,14 +59,6 @@ const UserModal = () => {
 type DataType = {
   username: string;
 };
-
-const schema = yup.object().shape({
-  username: yup
-    .string()
-    .matches(/^([^0-9]*)$/, "Username should not contain numbers")
-    .min(3, "at least 3 characters")
-    .required("Username is a required field"),
-});
 
 const FieldContainer = styled.div`
   display: flex;

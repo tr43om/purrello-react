@@ -17,6 +17,7 @@ const Root = styled.button`
   all: unset;
   display: flex;
   gap: 0.5rem;
+  background-color: var(--c-primary);
   align-items: center;
   cursor: pointer;
   padding: 0.5rem 2rem;
