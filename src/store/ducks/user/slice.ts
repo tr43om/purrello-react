@@ -1,13 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { UserType } from "../../../types";
 
 interface UserSliceState {
   username: string;
 }
 
 const initialState: UserSliceState = {
-  username: "Guest",
+  username: "",
 };
 
 const reducers = {

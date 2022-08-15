@@ -4,10 +4,13 @@ import { ReactNode } from "react";
 // react-hook-form
 import {
   useForm,
+  UseControllerProps,
   SubmitHandler,
   Controller,
   FieldValues,
   Path,
+  useController,
+  Control,
 } from "react-hook-form";
 
 // yup
@@ -19,67 +22,68 @@ import { Input } from "../ui/inputs/Input";
 import { Error } from "../ui/Error";
 import { TextArea } from "../ui";
 
-const FormInput = <TFormValues extends FieldValues>({
-  button,
-  name,
-  schema,
-  onSubmit,
-  placeholder,
-  type,
-}: FormInputProps<TFormValues>) => {
-  const {
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<TFormValues>({
-    resolver: yupResolver(schema),
-  });
+import { InputHTMLAttributes } from "react";
 
-  const errorMessage = errors[name]?.message?.toString();
+const FormInput = <TFormValues extends FieldValues>(
+  props: FormInputProps<TFormValues>
+) => {
+  // const {
+  //   handleSubmit,
+  //   control,
+  //   reset,
+  //   formState: { errors },
+  // } = useForm<TFormValues>({
+  //   resolver: yupResolver(schema),
+  // });
+
+  const {
+    field: { onChange, onBlur, value, ref },
+    formState: { errors },
+  } = useController(props);
+
+  const errorMessage = errors[props.name]?.message?.toString();
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form>
       <FieldContainer>
-        <Controller
-          control={control}
-          name={name}
-          render={({ field }) =>
-            type === "textarea" ? (
-              <TextArea
-                onChange={(e) => field.onChange(e)}
-                value={field.value}
-              />
-            ) : (
-              <Input
-                id={name}
-                placeholder={placeholder || "Type a new value..."}
-                onChange={(e) => field.onChange(e)}
-                value={field.value}
-              />
-            )
-          }
-        />
-        {button}
+        {props.type === "textarea" ? (
+          <TextArea
+            onChange={(e) => onChange(e)}
+            value={value}
+            placeholder={props.placeholder || "Type a new value..."}
+          />
+        ) : (
+          <Input
+            id={props.name}
+            placeholder={props.placeholder || "Type a new value..."}
+            onChange={(e) => onChange(e)}
+            value={value}
+            onKeyDown={props.onKeyDown}
+            onBlur={props.onBlur}
+          />
+        )}
+        {props.button}
       </FieldContainer>
 
-      {errors[name]?.message && <Error>{errorMessage}</Error>}
+      {errors[props.name]?.message && <Error>{errorMessage}</Error>}
     </Form>
   );
 };
 
 type SchemaType = yup.InferType<any>;
 
-type FormInputProps<TFormValues> = {
+interface FormInputProps<TFormValues extends FieldValues>
+  extends UseControllerProps<TFormValues>,
+    Omit<InputHTMLAttributes<HTMLInputElement>, "defaultValue"> {
   button?: ReactNode;
   type?: string;
   placeholder?: string;
   name: Path<TFormValues>;
-  schema: SchemaType;
-  onSubmit: SubmitHandler<FieldValues>;
-};
+  schema?: SchemaType;
+  onSubmit?: SubmitHandler<FieldValues>;
+}
 
-const Form = styled.form`
+const Form = styled.div`
   width: 100%;
 `;
 

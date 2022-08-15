@@ -10,8 +10,6 @@ import { IconButton } from "../ui";
 import { ListType } from "../../types";
 import { TextButton } from "../ui";
 import { useSelector } from "react-redux";
-import { selectList } from "../../store";
-import { RootState } from "../../store/store";
 import { ListsActions } from "../../store";
 import { useDispatch } from "react-redux";
 import { selectCards } from "../../store/ducks/cards/selectors";
@@ -21,13 +19,9 @@ import { selectUser } from "../../store";
 const List = ({ onDelete, list }: ListProps) => {
   const cards = useSelector(selectCards);
   const username = useSelector(selectUser);
-  const [listName, setListName] = useState(list.listName || "");
-  const [cardName, setCardName] = useState("");
   const [startEditingListName, setStartEditingListName] = useState(false);
   const [startTypingCardName, setStartTypingCardName] = useState(false);
-  // const currentList = useSelector<RootState>((state) =>
-  //   selectList(state, list.id)
-  // );
+
   const dispatch = useDispatch();
 
   const { updateList } = ListsActions;
@@ -42,11 +36,12 @@ const List = ({ onDelete, list }: ListProps) => {
     <ListContainer>
       <ListHeader>
         <EditText
-          value={listName}
-          setValue={setListName}
           startEditing={startEditingListName}
-          setStartEditing={setStartEditingListName}
-          store={() => dispatch(updateList({ id: list.id, listName }))}
+          defaultValue={list.listName}
+          store={(listName) => {
+            dispatch(updateList({ id: list.id, listName }));
+            setStartEditingListName(false);
+          }}
           placeholder="Edit card name..."
         >
           <h3 onClick={() => setStartEditingListName(true)}>{list.listName}</h3>
@@ -63,25 +58,22 @@ const List = ({ onDelete, list }: ListProps) => {
         ))}
 
         <EditText
-          value={cardName}
-          setValue={setCardName}
           startEditing={startTypingCardName}
-          setStartEditing={setStartTypingCardName}
-          store={() => {
+          store={(cardName) => {
             dispatch(
               addCard({
                 cardTitle: cardName,
                 listID: list.id,
-                category: listName,
+                category: list.listName,
                 createdBy: {
                   username,
                   photoURL: `https://ui-avatars.com/api/?name=${username}&background=random&rounded=true`,
                 },
               })
             );
-            setCardName("");
+            setStartTypingCardName(false);
           }}
-          placeholder="Create new card..."
+          placeholder="Create a new card..."
         >
           <TextButton onClick={() => setStartTypingCardName(true)}>
             Add new card

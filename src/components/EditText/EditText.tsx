@@ -1,62 +1,45 @@
-import { Input } from "../ui";
 import { v4 as uuid } from "uuid";
-import {
-  ReactNode,
-  InputHTMLAttributes,
-  ChangeEvent,
-  KeyboardEvent,
-  FocusEvent,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import { toast } from "react-toastify";
+import { ReactNode, InputHTMLAttributes } from "react";
+
+//redux & yup
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+// components
+import { FormInput } from "../FormInput";
 
 const EditText = ({
-  value,
-  setValue,
   startEditing,
-  setStartEditing,
   placeholder = "Type to edit...",
   children,
   store,
+  defaultValue,
 }: EditTextType) => {
-  const onChange = (event: ChangeEvent<HTMLInputElement>) =>
-    setValue(event.target.value);
-
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" || event.key === "Escape") {
-      if (event.target.value.trim() === "") {
-        toast.error("You should type smth, bro 👁️");
-      } else {
-        event.target.blur();
-      }
-    }
+  const storeData: SubmitHandler<DataType> = (data) => {
+    store(data.text);
+    reset();
   };
 
-  const onBlur = (event: FocusEvent<HTMLInputElement>) => {
-    if (event.target.value.trim() !== "") {
-      store();
-      setStartEditing?.(false);
-    } else {
-      console.log(event.target.value);
-      setStartEditing?.(false);
-    }
-  };
+  const { handleSubmit, control, reset } = useForm({
+    defaultValues: {
+      text: defaultValue || "",
+    },
+    resolver: yupResolver(schema),
+    mode: "onChange",
+  });
 
   if (children) {
     return (
       <>
         {startEditing ? (
-          <Input
-            value={value}
-            onChange={onChange}
-            onKeyDown={onKeyDown}
-            onBlur={onBlur}
-            placeholder={placeholder}
-            id={uuid()}
-            name="editText"
-            color="#fff"
-          />
+          <form onSubmit={handleSubmit(storeData)}>
+            <FormInput
+              placeholder={placeholder}
+              name="text"
+              control={control}
+            />
+          </form>
         ) : (
           children
         )}
@@ -64,25 +47,32 @@ const EditText = ({
     );
   } else {
     return (
-      <Input
-        value={value}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        id={uuid()}
-        name="editText"
-        color="#fff"
-      />
+      <form onSubmit={handleSubmit(storeData)}>
+        <FormInput
+          placeholder={placeholder}
+          id={uuid()}
+          name="text"
+          color="#fff"
+        />
+      </form>
     );
   }
 };
 
 export default EditText;
-interface EditTextType extends InputHTMLAttributes<HTMLInputElement> {
-  setValue: (value: string) => void;
+
+const schema = yup.object().shape({
+  text: yup.string().min(1, "You should type at least 1 character"),
+});
+
+interface EditTextType
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "defaultValue"> {
   startEditing?: Boolean;
-  setStartEditing?: Dispatch<SetStateAction<boolean>>;
   children?: ReactNode;
-  store: () => void;
+  store: (value: string) => void;
+  defaultValue?: string;
 }
+
+type DataType = {
+  text: string;
+};

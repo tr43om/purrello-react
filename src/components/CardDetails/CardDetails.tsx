@@ -1,10 +1,9 @@
+import styled from "styled-components";
 import { useState, useMemo } from "react";
 
-import styled from "styled-components";
+// data-fns
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/fp";
-import { SubmitHandler } from "react-hook-form";
-import * as yup from "yup";
 
 // types
 import { CardType } from "../../types";
@@ -26,16 +25,26 @@ import { CommentsActions } from "../../store/ducks/comments/slice";
 import { selectUser } from "../../store/ducks/user/selectors";
 import { CardsActions } from "../../store/ducks/cards/slice";
 
-const CardDetails = ({ card }: CardDetailsProps) => {
-  const [startEditing, setStartEditing] = useState(false);
-  const [cardDescription, setCardDescription] = useState(
-    card.cardDescription || ""
-  );
+// react-form-hook & yup
+import { useForm, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-  const schema = yup.object().shape({
-    comment: yup.string().min(1, "Comment should be at least 1 character"),
+const CardDetails = ({ card }: CardDetailsProps) => {
+  // states
+  const [startEditing, setStartEditing] = useState(false);
+
+  // hook-form
+  const { handleSubmit, control, reset } = useForm({
+    defaultValues: {
+      comment: "",
+    },
+
+    resolver: yupResolver(schema),
+    mode: "onChange",
   });
 
+  // redux
   const comments = useSelector(selectComments);
   const username = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -45,17 +54,17 @@ const CardDetails = ({ card }: CardDetailsProps) => {
     [comments, card.id]
   );
 
-  const storeCardDescription = () => {
+  const storeCardDescription = (desc: string) => {
     dispatch(
       CardsActions.updateCardDescription({
         id: card.id,
-        desc: cardDescription,
+        desc: desc,
       })
     );
     setStartEditing(false);
   };
 
-  const storeComment: SubmitHandler<any> = (data) => {
+  const storeComment: SubmitHandler<DataType> = (data) => {
     dispatch(
       CommentsActions.addComment({
         content: data.comment,
@@ -63,6 +72,7 @@ const CardDetails = ({ card }: CardDetailsProps) => {
         cardID: card.id,
       })
     );
+    reset();
   };
 
   return (
@@ -94,12 +104,10 @@ const CardDetails = ({ card }: CardDetailsProps) => {
         </DetailsTitle>
 
         <EditText
-          value={cardDescription}
-          setValue={setCardDescription}
           startEditing={startEditing}
-          setStartEditing={setStartEditing}
-          store={storeCardDescription}
+          store={(v) => storeCardDescription(v)}
           placeholder="Edit card description..."
+          defaultValue={card.cardDescription}
         >
           <p>{card.cardDescription}</p>
         </EditText>
@@ -113,13 +121,17 @@ const CardDetails = ({ card }: CardDetailsProps) => {
         <DetailsTitle>Activity</DetailsTitle>
         <DetailsCommentField>
           <Avatar src={card.createdBy.photoURL} alt="avatar" />
-          <FormInput
-            onSubmit={storeComment}
-            name="comment"
-            schema={schema}
-            type="textarea"
-            button={<IconButton icon={<MdSend />} $color="var(--c-primary)" />}
-          />
+          <form onSubmit={handleSubmit(storeComment)}>
+            <FormInput
+              name="comment"
+              control={control}
+              placeholder="Type a new comment..."
+              type="textarea"
+              button={
+                <IconButton icon={<MdSend />} $color="var(--c-primary)" />
+              }
+            />
+          </form>
         </DetailsCommentField>
 
         <Activities>
@@ -141,8 +153,16 @@ const CardDetails = ({ card }: CardDetailsProps) => {
 
 export default CardDetails;
 
+const schema = yup.object().shape({
+  comment: yup.string().min(1, "Comment should be at least 1 character"),
+});
+
 type CardDetailsProps = {
   card: CardType;
+};
+
+type DataType = {
+  comment: string;
 };
 
 const DetailsContainer = styled.div`

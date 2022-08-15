@@ -16,7 +16,7 @@ import { CardType } from "../../types";
 
 const Card = ({ card }: CardProps) => {
   const [startEditing, setStartEditing] = useState(false);
-  const [cardTitle, setCardTitle] = useState(card.cardTitle);
+
   const [isHovering, setIsHovering] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -26,16 +26,6 @@ const Card = ({ card }: CardProps) => {
 
   const handleMouseOut = () => setIsHovering(false);
 
-  const storeCardName = () => {
-    dispatch(
-      CardsActions.updateCardName({
-        cardTitle: cardTitle,
-        id: card.id,
-      })
-    );
-    setStartEditing(false);
-  };
-
   return (
     <>
       <CardContainer
@@ -44,14 +34,20 @@ const Card = ({ card }: CardProps) => {
         onClick={() => setShowDetails(true)}
       >
         <EditText
-          value={cardTitle}
-          setValue={setCardTitle}
+          defaultValue={card.cardTitle}
           startEditing={startEditing}
-          setStartEditing={setStartEditing}
-          store={storeCardName}
+          store={(cardTitle) => {
+            dispatch(
+              CardsActions.updateCardName({
+                cardTitle,
+                id: card.id,
+              })
+            );
+            setStartEditing(false);
+          }}
           placeholder="Edit card name..."
         >
-          <p>{cardTitle}</p>
+          <p>{card.cardTitle}</p>
           {isHovering && (
             <IconButton
               $size="1rem"

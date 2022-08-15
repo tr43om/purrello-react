@@ -13,18 +13,18 @@ import { useDispatch } from "react-redux";
 
 const Header = () => {
   const username = useSelector(selectUser);
-  const [name, setName] = useState(username || "");
   const [startEditing, setStartEditing] = useState(false);
   const dispatch = useDispatch();
 
   return (
     <HeaderContainer>
       <EditText
-        value={name}
-        setValue={setName}
+        defaultValue={username}
         startEditing={startEditing}
-        setStartEditing={setStartEditing}
-        store={() => dispatch(UserActions.changeUsername(name))}
+        store={(name) => {
+          setStartEditing(false);
+          dispatch(UserActions.changeUsername(name));
+        }}
         placeholder="Edit username..."
       >
         <h2>👋 Hello, {username ? username : "Guest"}</h2>
@@ -41,6 +41,7 @@ const Header = () => {
 };
 
 export default Header;
+
 const HeaderContainer = styled.header`
   display: flex;
   gap: 0.5rem;
