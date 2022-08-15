@@ -3,18 +3,16 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { UserType } from "../../../types";
 
 interface UserSliceState {
-  user: UserType;
+  username: string;
 }
 
 const initialState: UserSliceState = {
-  user: {
-    username: "Guest",
-  },
+  username: "Guest",
 };
 
 const reducers = {
   changeUsername: (state: UserSliceState, action: PayloadAction<string>) => {
-    state.user.username = action.payload;
+    state.username = action.payload;
   },
 };
 

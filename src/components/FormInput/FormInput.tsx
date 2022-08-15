@@ -18,7 +18,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "../ui/inputs/Input";
 import { Error } from "../ui/Error";
 import { TextArea } from "../ui";
-import { clear } from "console";
 
 const FormInput = <TFormValues extends FieldValues>({
   button,
@@ -80,12 +79,15 @@ type FormInputProps<TFormValues> = {
   onSubmit: SubmitHandler<FieldValues>;
 };
 
-const Form = styled.form``;
+const Form = styled.form`
+  width: 100%;
+`;
 
 const FieldContainer = styled.div`
   display: flex;
   gap: 2rem;
   align-items: flex-start;
+  width: 100%;
 
   & > *:last-child {
     margin-top: 1rem;

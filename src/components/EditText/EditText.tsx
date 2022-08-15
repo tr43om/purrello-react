@@ -38,6 +38,7 @@ const EditText = ({
       store();
       setStartEditing?.(false);
     } else {
+      console.log(event.target.value);
       setStartEditing?.(false);
     }
   };

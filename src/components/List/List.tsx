@@ -20,14 +20,14 @@ import { selectUser } from "../../store";
 
 const List = ({ onDelete, list }: ListProps) => {
   const cards = useSelector(selectCards);
-  const { username } = useSelector(selectUser);
+  const username = useSelector(selectUser);
   const [listName, setListName] = useState(list.listName || "");
   const [cardName, setCardName] = useState("");
   const [startEditingListName, setStartEditingListName] = useState(false);
   const [startTypingCardName, setStartTypingCardName] = useState(false);
-  const currentList = useSelector<RootState>((state) =>
-    selectList(state, list.id)
-  );
+  // const currentList = useSelector<RootState>((state) =>
+  //   selectList(state, list.id)
+  // );
   const dispatch = useDispatch();
 
   const { updateList } = ListsActions;

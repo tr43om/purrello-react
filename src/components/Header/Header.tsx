@@ -12,7 +12,7 @@ import { UserActions } from "../../store";
 import { useDispatch } from "react-redux";
 
 const Header = () => {
-  const { username } = useSelector(selectUser);
+  const username = useSelector(selectUser);
   const [name, setName] = useState(username || "");
   const [startEditing, setStartEditing] = useState(false);
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const Header = () => {
         startEditing={startEditing}
         setStartEditing={setStartEditing}
         store={() => dispatch(UserActions.changeUsername(name))}
-        placeholder="Edit card name..."
+        placeholder="Edit username..."
       >
         <h2>👋 Hello, {username ? username : "Guest"}</h2>
       </EditText>

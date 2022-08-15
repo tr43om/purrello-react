@@ -5,42 +5,30 @@ import { ContainedButton, IconButton, TextArea } from "../ui";
 import { MdDelete } from "react-icons/md";
 import { MdModeEdit } from "react-icons/md";
 import { useState } from "react";
-<<<<<<< HEAD
+
 import { FormInput } from "../FormInput";
 import { SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 
-export default function Comment({ comment }: CommentProps) {
-  const { deleteComment, updateComment } = useAppContext();
-
-=======
-
 // redux
 import { useDispatch } from "react-redux";
 import { CommentsActions } from "../../store";
-export default function Comment({ data }: CommentProps) {
-  const [comment, setComment] = useState(data.content || "");
->>>>>>> feature/implementing-redux
+export default function Comment({ comment }: CommentProps) {
   const [startEditingComment, setStartEditingComment] = useState(false);
   const dispatch = useDispatch();
 
-<<<<<<< HEAD
   const schema = yup.object().shape({
     editComment: yup.string().min(1, "Comment should be at least 1 character"),
   });
 
   const handleUpdateComment: SubmitHandler<any> = (data) => {
-    updateComment(comment.id, data.editComment);
-
-=======
-  const handleUpdateComment = () => {
     dispatch(
       CommentsActions.updateComment({
         id: data.id,
-        comment,
+        comment: data.editComment,
       })
     );
->>>>>>> feature/implementing-redux
+
     setStartEditingComment(false);
   };
   return (
@@ -70,14 +58,9 @@ export default function Comment({ data }: CommentProps) {
       <Actions>
         <IconButton
           icon={<MdDelete />}
-<<<<<<< HEAD
           $size="1rem"
           $color="#000"
-          onClick={() => deleteComment(comment.id)}
-=======
-          size="1rem"
-          onClick={() => dispatch(CommentsActions.deleteComment(data.id))}
->>>>>>> feature/implementing-redux
+          onClick={() => dispatch(CommentsActions.deleteComment(comment.id))}
         />
         <IconButton
           icon={<MdModeEdit />}

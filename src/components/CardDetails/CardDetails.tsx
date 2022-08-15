@@ -1,8 +1,5 @@
 import { useState, useMemo } from "react";
 
-
-
-
 import styled from "styled-components";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/fp";
@@ -14,7 +11,7 @@ import { CardType } from "../../types";
 
 // components
 import { EditText } from "../EditText";
-import { TextButton, IconButton, TextArea, ContainedButton } from "../ui";
+import { TextButton, IconButton, ContainedButton } from "../ui";
 import { Comment } from "../Comment";
 import { FormInput } from "../FormInput";
 
@@ -29,8 +26,6 @@ import { CommentsActions } from "../../store/ducks/comments/slice";
 import { selectUser } from "../../store/ducks/user/selectors";
 import { CardsActions } from "../../store/ducks/cards/slice";
 
-;
-
 const CardDetails = ({ card }: CardDetailsProps) => {
   const [startEditing, setStartEditing] = useState(false);
   const [cardDescription, setCardDescription] = useState(
@@ -42,7 +37,7 @@ const CardDetails = ({ card }: CardDetailsProps) => {
   });
 
   const comments = useSelector(selectComments);
-  const { username } = useSelector(selectUser);
+  const username = useSelector(selectUser);
   const dispatch = useDispatch();
 
   const currentComments = useMemo(
@@ -60,7 +55,6 @@ const CardDetails = ({ card }: CardDetailsProps) => {
     setStartEditing(false);
   };
 
-
   const storeComment: SubmitHandler<any> = (data) => {
     dispatch(
       CommentsActions.addComment({
@@ -69,8 +63,7 @@ const CardDetails = ({ card }: CardDetailsProps) => {
         cardID: card.id,
       })
     );
-    
-
+  };
 
   return (
     <DetailsContainer>
@@ -94,6 +87,7 @@ const CardDetails = ({ card }: CardDetailsProps) => {
             <IconButton
               icon={<MdModeEdit />}
               $size="1rem"
+              $color="#000"
               onClick={() => setStartEditing(true)}
             />
           )}
@@ -143,13 +137,13 @@ const CardDetails = ({ card }: CardDetailsProps) => {
       </DetailsActivity>
     </DetailsContainer>
   );
-}}
+};
 
 export default CardDetails;
 
 type CardDetailsProps = {
   card: CardType;
-}
+};
 
 const DetailsContainer = styled.div`
   display: flex;
@@ -196,6 +190,7 @@ const DetailsComments = styled.div`
 const DetailsCommentField = styled.div`
   display: flex;
   gap: 0.7rem;
+
   align-items: flex-start;
 `;
 const Avatar = styled.img`

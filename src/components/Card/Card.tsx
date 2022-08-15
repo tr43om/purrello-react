@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { MdModeEdit } from "react-icons/md";
 import { IconButton, Modal } from "../ui";
 import { useState } from "react";
-import { CardType } from "../../types";
+
 // components
 import { EditText } from "../EditText";
 import { CardDetails } from "../CardDetails";
@@ -10,6 +10,9 @@ import { CardDetails } from "../CardDetails";
 // redux
 import { useDispatch } from "react-redux";
 import { CardsActions } from "../../store";
+
+// types
+import { CardType } from "../../types";
 
 const Card = ({ card }: CardProps) => {
   const [startEditing, setStartEditing] = useState(false);

@@ -1,10 +1,6 @@
-<<<<<<< HEAD
 import styled from "styled-components";
 // react-hook-form
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-
-// Context
-import { useAppContext } from "../../contexts/AppContext";
 
 // Components
 import { Input, IconButton, Modal, Error } from "../ui";
@@ -17,9 +13,16 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { MdSend } from "react-icons/md";
 import FormInput from "../FormInput/FormInput";
 
-const UserModal = () => {
-  const { username, storeUsername } = useAppContext();
+// React
+import { useState } from "react";
 
+// redux
+import { useSelector } from "react-redux";
+import { selectUser } from "../../store";
+import { UserActions } from "../../store";
+import { useDispatch } from "react-redux";
+
+const UserModal = () => {
   const schema = yup.object().shape({
     username: yup
       .string()
@@ -28,30 +31,11 @@ const UserModal = () => {
       .required("Username is a required field"),
   });
 
-  const onSubmit: SubmitHandler<any> = (data) => {
-    storeUsername(data.username);
-=======
-// React
-import { useState } from "react";
-
-// Components
-import { Modal } from "../ui";
-import { Input } from "../ui";
-// redux
-import { useSelector } from "react-redux";
-import { selectUser } from "../../store";
-import { UserActions } from "../../store";
-import { useDispatch } from "react-redux";
-
-const UserModal = () => {
-  const [name, setName] = useState("");
-  const { username } = useSelector(selectUser);
+  const username = useSelector(selectUser);
 
   const dispatch = useDispatch();
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(UserActions.changeUsername(name));
->>>>>>> feature/implementing-redux
+  const onSubmit: SubmitHandler<any> = (data) => {
+    dispatch(UserActions.changeUsername(data.username));
   };
 
   return (

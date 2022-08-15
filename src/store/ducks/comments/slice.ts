@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { CommentsType, CommentInputType } from "../../../types";
+import { CommentsType } from "../../../types";
+import { CommentInputType } from "../../../types/commentsTypes";
 import { v4 as uuid } from "uuid";
 import _ from "lodash";
 

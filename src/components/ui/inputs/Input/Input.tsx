@@ -10,6 +10,7 @@ const Input = ({
   id,
   $color,
   onChange,
+  onBlur,
   value,
   type = "text",
 }: InputProps) => {
@@ -23,6 +24,7 @@ const Input = ({
         autoFocus
         color={$color}
         onChange={onChange}
+        onBlur={onBlur}
         value={value}
       />
 

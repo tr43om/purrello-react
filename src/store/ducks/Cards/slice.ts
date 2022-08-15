@@ -3,8 +3,6 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { CardsType, CardType, CardInputType } from "../../../types";
 import { v4 as uuid } from "uuid";
 import _ from "lodash";
-import { username } from "../user/selectors";
-// redux
 
 interface CardsSliceState {
   cards: CardsType;
